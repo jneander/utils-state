@@ -1,10 +1,16 @@
-import sinon from 'sinon'
+import {expect} from 'chai'
+import {spy} from 'sinon'
 
-import {Store} from '..'
+import {Store} from './store'
+
+type ExampleState = {
+  integers?: number[]
+  letters?: string[]
+}
 
 describe('Store', () => {
-  let initialState
-  let store
+  let initialState: ExampleState
+  let store: Store<ExampleState>
 
   beforeEach(() => {
     initialState = {
@@ -21,7 +27,7 @@ describe('Store', () => {
     })
 
     it('defaults to an empty object when not given a value', () => {
-      store = new Store()
+      store = new Store<ExampleState>()
       expect(store.getState()).to.deep.equal({})
     })
 
@@ -71,7 +77,7 @@ describe('Store', () => {
   })
 
   describe('subscription', () => {
-    let observed
+    let observed: ExampleState[]
 
     beforeEach(() => {
       observed = []
@@ -92,9 +98,9 @@ describe('Store', () => {
     })
   })
 
-  describe('#transaction()', () => {
-    let letters, integers
-    let observed
+  describe('#inTransaction()', () => {
+    let letters: string[], integers: number[]
+    let observed: ExampleState[]
 
     beforeEach(() => {
       letters = ['d', 'e', 'f']
@@ -106,28 +112,28 @@ describe('Store', () => {
     })
 
     it('calls the given update function', () => {
-      const spy = sinon.spy()
-      store.transaction(spy)
-      expect(spy.callCount).to.equal(1)
+      const transactionSpy = spy()
+      store.inTransaction(transactionSpy)
+      expect(transactionSpy.callCount).to.equal(1)
     })
 
     it('accepts updates from within the update function', () => {
-      store.transaction(() => {
+      store.inTransaction(() => {
         store.setState({integers})
       })
       expect(store.getState().integers).to.deep.equal([4, 5, 6])
     })
 
     it('accepts multiple updates from within the update function', () => {
-      store.transaction(() => {
+      store.inTransaction(() => {
         store.setState({integers})
         store.setState({letters})
       })
       expect(store.getState()).to.deep.equal({letters, integers})
     })
 
-    it('updates listeners once per transaction', () => {
-      store.transaction(() => {
+    it('updates listeners once per inTransaction', () => {
+      store.inTransaction(() => {
         store.setState({integers})
         store.setState({letters})
       })
@@ -135,7 +141,7 @@ describe('Store', () => {
     })
 
     it('updates listeners with the state after the transaction completes', () => {
-      store.transaction(() => {
+      store.inTransaction(() => {
         store.setState({integers})
         store.setState({letters})
       })
