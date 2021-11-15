@@ -1,13 +1,14 @@
 # Development Directories
-_spec_
-config
-scripts
-spec-support
+.github
+.vscode
 src
 
 # Development Files
 *.spec.js
-.eslintrc.js
+.eslintrc.cjs
+.eslintignore
+.prettierrc
+tsconfig.json
 
 # Temporary Directories
 .babel-cache
