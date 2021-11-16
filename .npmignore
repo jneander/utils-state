@@ -10,6 +10,7 @@ src
 .prettierrc
 tsconfig.json
 .mocharc.json
+.babelrc
 
 # Temporary Directories
 .babel-cache
