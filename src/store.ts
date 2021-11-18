@@ -25,7 +25,7 @@ export class Store<State extends Record<string, any>> {
     return this.state
   }
 
-  setState(state: State): void {
+  setState(state: Partial<State>): void {
     this.replaceState({...this.state, ...state})
   }
 
